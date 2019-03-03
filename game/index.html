@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./common/jquery-2.1.1.min.js"></script>
+    <title>暴捶铁头娃</title>
+</head>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+                    }
+        .content{
+            width: 414px;
+            height: 736px;
+            margin: 10px auto;
+            background-image: url('./img/bg.png');
+            position: relative;
+            overflow: hidden;
+                    }
+        .score{
+            font-size: 25px;
+            color:white;
+            position: absolute;
+            left: 355px;
+            top: 80px;
+        }
+        .timeBar{
+            width: 320px;
+            height: 15px;
+            position: absolute;
+            background-color: white;
+            top: 141px;
+            left: 75px;
+            border-radius: 13px;
+        }
+
+        .content>button{
+            width: 260px;
+            height: 60px;
+            position: absolute;
+            top: 340px;
+            left: 82px;
+            font-size: 35px;
+            display: block;
+        }
+        .rules_panel{
+            width: 414px;
+            height: 736px;
+            background-color: rgba(0, 0, 0, 0.6);
+            position: fixed;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            display: none;
+        }
+        .rules_panel>h1{
+            margin: 120px auto 30px auto;
+        }
+        .restart_panel{
+            width: 414px;
+            height: 736px;
+            background-color: rgba(0, 0, 0, 0.6);
+            position: fixed;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            z-index: 2;
+            display: none;
+        }
+        .restart_panel>h1{
+            margin: 120px auto 30px auto;
+            text-shadow: 5px 5px red;
+        }
+        .restart_panel>button{
+            width: 260px;
+            height: 60px;
+            position: absolute;
+            top: 340px;
+            left: 82px;
+            font-size: 35px;
+            display: block;
+        }
+        .rules{
+            width: 100%;
+            height: 60px;
+            /* background-color:red; */
+            position: absolute;
+            bottom: 0; 
+            text-align:center;
+            line-height: 60px;
+            font-size: 28px;
+            color:white;
+        }
+    </style>
+<body>
+    <div class="content">
+        <span class="score">0</span>
+            <div class="timeBar"></div>
+            <div class="rules_panel"><h1>游戏规则</h1>
+                <h3>1.点击开始游戏，进行游戏。</h3>
+                <h3>2.击打坑中跑出的铁头娃，打中加10分。</h3>
+                <h3>3.打中救出的爷爷扣20分。</h3>
+                <h3>3.时间到后结算分数。</h3>
+                <h3>4.点击重新开始重新教训铁头娃。</h3>
+                <button id="btn2">我知道了</button>
+            </div>
+            <div class="restart_panel">
+                <h1>GAME OVER</h1>
+                <h2>锤不动铁头娃</h2>
+                <h2>等着被社会哥锤吧</h2>
+                <button id="btn3">重新开始</button>
+            </div>
+            <button id="btn">开始游戏</button>
+            <div class="rules"><span>游戏规则</span></div>
+    </div>
+    <script>
+        //开始游戏
+        $('#btn').click(function(){
+            $('#btn').css('display','none')
+            $('.rules_panel').css('display','none')
+                progressHandle();
+                imgHadnler();
+        })
+        $('.rules').click(function(){
+            $('#btn').css('top','450px')
+            $('.rules_panel').css('display','block')
+        })
+        $('#btn2').click(function(){
+            $('.rules_panel').css('display','none')
+        })
+        //重新开始
+        $('#btn3').click(function(){
+            $('.restart_panel').css('display','none')
+            progressHandle();
+            imgHadnler();
+            $('.score').text('0');
+        })
+        //处理进度条
+        function progressHandle(){
+            $('.timeBar').css({
+                    width:'320px',
+                })
+            var timer = setInterval(function(){
+                var progressWidth = $('.timeBar').width();
+                    progressWidth -= 3;
+                $('.timeBar').css({
+                    width:progressWidth,
+                })
+                if(progressWidth<=0){
+                    clearInterval(timer);
+                    $('.restart_panel').css('display','block')
+                  stopGame();
+                }
+            },400)
+            
+        }
+        //处理人物
+        function imgHadnler(){
+            //人物图片
+                var per1 =['./img/w1.png','./img/w2.png','./img/w3.png','./img/w4.png','./img/w5.png','./img/w6.png','./img/w7.png','./img/w8.png','./img/w9.png',]
+                var per2 =['./img/y1.png','./img/y2.png','./img/y3.png','./img/y4.png','./img/y5.png','./img/y6.png','./img/y7.png','./img/y8.png','./img/y9.png',]
+             //出现位置     
+                var perLocation = [{left:'100px',top:'400px'},   
+                {left:'15px',top:'520px'},
+                {left:'160px',top:'520px'},
+                {left:'295px',top:'520px'},
+                {left:'15px',top:'415px'},
+                {left:'160px',top:'415px'},
+                {left:'295px',top:'415px'},
+                {left:'15px',top:'318px'},
+                {left:'160px',top:'318px'},
+                {left:'295px',top:'318px'},
+                {left:'15px',top:'223px'},
+                {left:'160px',top:'223px'},
+                {left:'295px',top:'223px'},
+                ]
+            //创建图片
+                var $perImg = $("<img src='' class='perImg'>");
+            //显示的位置
+
+                var posIndex = Math.floor(Math.random()*12)
+
+                $perImg.css({
+                    position:'absolute',
+                    left:perLocation[posIndex].left,
+                    top:perLocation[posIndex].top
+                })
+                //随机获取数组中的类型
+                    var perType = Math.round(Math.random()) ==0 ?per1 : per2;
+            //图片内容
+            window.perShowIndex = 0;
+            window.perShowIndexEnd =4;
+            window.perTime = setInterval(function(){
+                 if(perShowIndex>perShowIndexEnd){
+                    $perImg.remove();
+                    clearInterval(perTime);
+                    imgHadnler();
+                 }
+                $perImg.attr('src',perType[perShowIndex]);
+                perShowIndex++;
+            },150)
+            
+            //加入content
+            $('.content').append($perImg);
+         //加分
+            gameRules($perImg);
+        }
+
+        function gameRules($perImg){    
+                $perImg.one('click',function(){
+                    window.perShowIndex =5;
+                    window.perShowIndexEnd= 8;
+                    var $src =$(this).attr('src');
+                    console.log($src)
+                    var flag = $src.indexOf('w') >=0;
+                    console.log(flag)
+                    if(flag){
+                        $('.score').text(parseInt($('.score').text() )+10);
+                    }
+                    else{
+                        $('.score').text(parseInt($('.score').text() )-10);
+                    }
+                })
+            }
+
+        //结束游戏
+        function stopGame(){
+                $('.perImg').remove();
+                clearInterval(perTime);
+            }
+    </script>
+</body>
+</html>
